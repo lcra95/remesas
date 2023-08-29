@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 import sys
 import os
@@ -27,12 +27,14 @@ class Transaccion(db.Model):
     Tipo_pago = db.Column(db.String(10), nullable=False)  # "Compra" o "Venta"
     estado = db.Column(db.String(10), nullable=False)  # "Compra" o "Venta"
 
-
+@app.route('/')
+def home():
+    return render_template('index.html')
 @app.route('/transacciones', methods=['POST'])
 def agregar_transaccion():
     try:
         data = request.json
-
+        print("dad")
         nueva_transaccion = Transaccion(
             nombre_cliente=data['nombre_cliente'],
             monto=data['monto'],
