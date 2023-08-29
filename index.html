@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Transacciones Criptodivisas</title>
+
+    <!-- CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- CSS de DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+</head>
+
+<body>
+
+    <div class="container px-md-5">
+        <div class="row">
+            <div class="col-12 text-center text-md-left">
+                <button class="btn btn-primary mt-3 mb-3" data-toggle="modal" data-target="#addModal">Agregar
+                    Registro</button>
+            </div>
+
+            <div class="col-12">
+                <div class="row filters">
+
+                    <div class="col-12 col-md-2 mb-3">
+                        <label for="filterEstado">Estado:</label>
+                        <select id="filterEstado" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Pagado">Pagado</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-3 mb-3">
+                        <label for="filterTipoPago">Tipo de Pago:</label>
+                        <select id="filterTipoPago" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Caja vecina">Caja vecina</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-2 mb-3">
+                        <label for="filterFecha">Fecha:</label>
+                        <input type="date" id="filterFecha" class="form-control">
+                    </div>
+
+                    <div class="col-12 col-md-2 mb-3">
+                        <label for="filterFechaInicio">Fecha Inicio:</label>
+                        <input type="date" id="filterFechaInicio" class="form-control">
+                    </div>
+
+                    <div class="col-12 col-md-2 mb-3">
+                        <label for="filterFechaFin">Fecha Fin:</label>
+                        <input type="date" id="filterFechaFin" class="form-control">
+                    </div>
+
+                    <div class="col-12 col-md-1 text-center">
+                        <button id="applyFilters" class="btn btn-primary mt-2">Filtrar</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12">
+
+                <!-- Modal para agregar registro -->
+                <div class="modal fade" id="addModal">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Agregar Registro</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addForm">
+                                    <div class="form-group">
+                                        <label for="monto">Monto:</label>
+                                        <input type="number" step="0.00000001" class="form-control" id="monto" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tipo_transaccion">Tipo Transacción:</label>
+                                        <select class="form-control" id="tipo_transaccion">
+                                            <option value="Compra">Compra</option>
+                                            <option value="Venta">Venta</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nombre_cliente">Nombre Cliente:</label>
+                                        <input type="text" class="form-control" id="nombre_cliente" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Tipo_pago">Tipo de Pago</label>
+                                        <select class="form-control" id="Tipo_pago" required>
+                                            <option value="Efectivo">Efectivo</option>
+                                            <option value="Transferencia">Transferencia</option>
+                                            <option value="Caja vecina">Caja Vecina</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="estado">Estado</label>
+                                        <select class="form-control" id="estado" required>
+                                            <option value="Pagado" selected>Pagado</option>
+                                            <option value="Pendiente">Pendiente</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Agregar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla para mostrar registros -->
+                <table id="transaccionesTable" class="table table-responsive-sm table-striped table-bordered mt-3"
+                    style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Transacción</th>
+                            <th>Cliente</th>
+                            <th>Monto</th>
+                            <th>Fecha</th>
+                            <th>Tipo de Pago</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5 mb-3">
+        <div class="row">
+            <!-- Card para totales y porcentaje de ganancias -->
+            <div class="col-md-3 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Informe financiero
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Total Compras: <span id="totalCompras"></span></li>
+                        <li class="list-group-item">Total Ventas: <span id="totalVentas"></span></li>
+                        <li class="list-group-item">Ganancias:  <span id="ganancia"></span> (<span id="porcentajeGanancias"></span>%)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Card para el monto por tipo de pago -->
+            <div class="col-md-3 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Ventas por tipo de pago
+                    </div>
+                    <ul class="list-group list-group-flush" id="montoTipoPagoList">
+                        <!-- Aquí se llenarán los datos con JavaScript -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card para el total de transacciones -->
+            <div class="col-md-3 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Total Ventas
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalTransacciones">
+                            <!-- Aquí se mostrará el total con JavaScript -->
+                        </h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card para transacciones pendientes -->
+            <div class="col-md-3 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Por Cobrar
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="transaccionesPendientes">
+                            <!-- Aquí se mostrará el total de pendientes con JavaScript -->
+                        </h5>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- JS de Bootstrap y jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- JS de DataTables -->
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script>
+        $(document).ready(function () {
+            updateDashboard({});
+            var table = $('#transaccionesTable').DataTable({
+                ajax: 'http://localhost:9090/transacciones',
+                columns: [
+
+                    { data: 'id' },
+                    { data: 'Transaccion' },
+                    { data: 'Cliente' },
+                    { data: 'Monto' },
+                    { data: 'Fecha' },
+                    { data: 'Tipo pago' },
+                    { data: 'Estado' },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            if (data.Estado === 'Pendiente') {
+                                return `<button class="btn btn-primary" onclick="cambiarEstado(${data.id})">Editar</button>`;
+                            } else {
+                                return `<button class="btn btn-primary" disabled>Editar</button>`;
+                            }
+                        }
+                    }
+                ],
+                order: [[0, 'desc']], // Ordena por la primera columna (ID) de forma descendente
+                searching: false  // Desactiva el campo de búsqueda
+            });
+
+            $('#addForm').submit(function (e) {
+                e.preventDefault();
+
+                var data = {
+                    nombre_cliente: $('#nombre_cliente').val(),
+                    monto: parseFloat($('#monto').val()),
+                    tipo_transaccion: $('#tipo_transaccion').val(),
+                    Tipo_pago: $('#Tipo_pago').val(),
+                    estado: $('#estado').val(),
+                };
+
+                $.ajax({
+                    url: 'http://localhost:9090/transacciones',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        // Cerrar modal y limpiar formulario
+                        $('#addModal').modal('hide');
+                        $('#addForm')[0].reset();
+
+                        // Refrescar la tabla
+                        table.ajax.reload();
+                    }
+                });
+            });
+
+            $('#applyFilters').click(function () {
+                // Obtener valores de los filtros
+                var filters = {
+                    estado: $('#filterEstado').val(),
+                    tipo_pago: $('#filterTipoPago').val(),
+                    fecha: $('#filterFecha').val(),
+                    fecha_inicio: $('#filterFechaInicio').val(),
+                    fecha_fin: $('#filterFechaFin').val()
+                };
+
+                // Crear URL con argumentos para la DataTable
+                var tableApiUrl = 'http://localhost:9090/transacciones?';
+                for (const key in filters) {
+                    if (filters[key]) tableApiUrl += key + '=' + filters[key] + '&';
+                }
+
+                // Hacer petición AJAX para la DataTable
+                $.get(tableApiUrl, function (data) {
+                    table.clear().rows.add(data.data).draw();
+
+                    // Actualizar el dashboard con los mismos filtros
+                    updateDashboard(filters);
+                });
+            });
+            // fetch('http://localhost:9090/dashboard/metrics') // Ajusta la URL según tu configuración
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         data.monto_por_tipo_pago.forEach(item => {
+            //             document.getElementById('montoTipoPagoList').innerHTML += `<li class="list-group-item">${item.tipo_pago}: ${item.monto} (${item.porcentaje}%)</li>`;
+            //         });
+
+            //         document.getElementById('totalTransacciones').innerText = data.total_transacciones;
+            //         document.getElementById('transaccionesPendientes').innerText = data.transacciones_pendientes;
+            //         document.getElementById('totalCompras').innerText = data.monto_total_compras;
+            //         document.getElementById('totalVentas').innerText = data.monto_total_ventas;
+            //         document.getElementById('porcentajeGanancias').innerText = data.porcentaje_ganancias.toFixed(2);
+            //     });
+            // updateDashboard({});
+            function updateDashboard(filters) {
+                var apiUrl = 'http://localhost:9090/dashboard/metrics?';
+
+                for (const key in filters) {
+                    if (filters[key]) apiUrl += key + '=' + filters[key] + '&';
+                }
+
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('montoTipoPagoList').innerHTML = ''; // Limpiar la lista anterior
+
+                        data.monto_por_tipo_pago.forEach(item => {
+                            document.getElementById('montoTipoPagoList').innerHTML += `<li class="list-group-item">${item.tipo_pago}: ${item.monto.toLocaleString()} (${item.porcentaje}%)</li>`;
+                        });
+
+                        document.getElementById('totalTransacciones').innerText = data.total_transacciones;
+                        document.getElementById('transaccionesPendientes').innerText = data.transacciones_pendientes;
+                        document.getElementById('totalCompras').innerText = data.monto_total_compras.toLocaleString();
+                        document.getElementById('totalVentas').innerText = data.monto_total_ventas.toLocaleString();
+                        document.getElementById('ganancia').innerText = (data.monto_total_ventas - data.monto_total_compras).toLocaleString();
+                        document.getElementById('porcentajeGanancias').innerText = data.porcentaje_ganancias.toFixed(2);
+                    });
+            }
+
+        });
+        function cambiarEstado(id) {
+            // Aquí debes implementar el código para llamar a tu API y cambiar el estado de la transacción.
+            $.ajax({
+                url: `http://localhost:9090/editar_estado/${id}`,
+                type: 'PUT',
+                success: function (result) {
+                    // Refrescar la tabla después de actualizar el estado
+                    table.ajax.reload();
+                }
+            });
+        }
+
+
+    </script>
+
+</body>
+
+</html>
