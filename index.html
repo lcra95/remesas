@@ -205,7 +205,7 @@
         $(document).ready(function () {
             updateDashboard({});
             var table = $('#transaccionesTable').DataTable({
-                ajax: 'http://localhost:9090/transacciones',
+                ajax: 'http://localhost:9292/transacciones',
                 columns: [
 
                     { data: 'id' },
@@ -242,7 +242,7 @@
                 };
 
                 $.ajax({
-                    url: 'http://localhost:9090/transacciones',
+                    url: 'http://localhost:9292/transacciones',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
@@ -268,7 +268,7 @@
                 };
 
                 // Crear URL con argumentos para la DataTable
-                var tableApiUrl = 'http://localhost:9090/transacciones?';
+                var tableApiUrl = 'http://localhost:9292/transacciones?';
                 for (const key in filters) {
                     if (filters[key]) tableApiUrl += key + '=' + filters[key] + '&';
                 }
@@ -281,7 +281,7 @@
                     updateDashboard(filters);
                 });
             });
-            // fetch('http://localhost:9090/dashboard/metrics') // Ajusta la URL según tu configuración
+            // fetch('http://localhost:9292/dashboard/metrics') // Ajusta la URL según tu configuración
             //     .then(response => response.json())
             //     .then(data => {
             //         data.monto_por_tipo_pago.forEach(item => {
@@ -296,7 +296,7 @@
             //     });
             // updateDashboard({});
             function updateDashboard(filters) {
-                var apiUrl = 'http://localhost:9090/dashboard/metrics?';
+                var apiUrl = 'http://localhost:9292/dashboard/metrics?';
 
                 for (const key in filters) {
                     if (filters[key]) apiUrl += key + '=' + filters[key] + '&';
@@ -324,7 +324,7 @@
         function cambiarEstado(id) {
             // Aquí debes implementar el código para llamar a tu API y cambiar el estado de la transacción.
             $.ajax({
-                url: `http://localhost:9090/editar_estado/${id}`,
+                url: `http://localhost:9292/editar_estado/${id}`,
                 type: 'PUT',
                 success: function (result) {
                     // Refrescar la tabla después de actualizar el estado
